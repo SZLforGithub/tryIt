@@ -1,0 +1,12 @@
+.hover:hover .edit{
+	display: block;
+}
+
+.edit{
+	display: none;
+}
+
+.edit:hover{
+	text-decoration: underline;
+	color: #2F44EE;
+}
