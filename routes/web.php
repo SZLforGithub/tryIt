@@ -12,11 +12,13 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return redirect()->route('home');
 });
 
 Auth::routes();
+Route::get('logout', 'LoginController@logout');
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::post('edit', 'ProfileController@edit')->name('edit');
+Route::post('/uploadShot', 'shotController@uploadShot')->name('uploadShot');
