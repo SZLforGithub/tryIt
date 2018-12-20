@@ -60,16 +60,7 @@
                                 <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required>
                             </div>
                         </div>
-
-                        <!--<div class="form-group row">
-                            <label for="shot" class="col-md-4 clo-form-label text-md-right">{{ __('上傳大頭貼') }}</label>
-
-                            <div class="col-md-6">
-                                <input id="shot" type="file" onchange="readURL(this)" accept="image/gif, image/jpeg, image/jpg, image/png" />
-                                <img id="preview_shot" src="/tryIt/public/shot_default.jpeg" width="250" height="200" style="margin:auto;" />
-                            </div> 
-                        </div>-->
-
+                        
                         <div class="form-group row mb-0">
                             <div class="col-md-6 offset-md-4">
                                 <button type="submit" class="btn btn-primary">
@@ -78,18 +69,6 @@
                             </div>
                         </div>
                     </form>
-                    <!--<script>
-                        //preview for shot
-                        /*function readURL(input) {
-                            if (input.files && input.files[0]) {
-                                var reader = new FileReader();
-                                reader.onload = function(e) {
-                                    $("#preview_shot").attr('src', e.target.result);
-                                }
-                                reader.readAsDataURL(input.files[0]);
-                            }
-                        }*/
-                    </script>-->
                 </div>
             </div>
         </div>
