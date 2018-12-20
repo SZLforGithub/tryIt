@@ -21,12 +21,16 @@ class ProfileController extends Controller
 
     public function edit(Request $request)
     {
-    	$whoYouAre = Auth::user()->name;
     	$request->all();
+    	$whoYouAre = Auth::user()->name;
     	$user = User::where('name', '=', $whoYouAre)->first();
-    	$user->name = $request->name;
-    	$user->save();
 
+    	if($request->whatThisInput == 'name')
+	    	$user->name = $request->name;
+    	else if($request->whatThisInput == 'email')
+    		$user->email = $request->email;
+	    
+    	$user->save();
     	return Redirect('profile');
     }
 }
