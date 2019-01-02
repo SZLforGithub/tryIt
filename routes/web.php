@@ -22,3 +22,4 @@ Route::get('/home', 'HomeController@index')->name('home');
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::post('edit', 'ProfileController@edit')->name('edit');
 Route::post('/uploadShot', 'shotController@uploadShot')->name('uploadShot');
+Route::post('/editShot', 'shotController@editShot')->name('editShot');
