@@ -3,24 +3,88 @@
 
 	.edit { visibility:hidden; }
 
-	#containerOfShotPreview {
-		width: 1000px;
-		height: 500px;
+	.containerOfShot {
+		max-width: 600px;
+		max-height: 600px;
+		min-height: 300px;
 	}
 
-	.jcrop-tracker {
-		width: 100% !important;
-		height: 100% !important;
+	.sizeOfShot {
+		max-width: 600px;
+		max-height: 600px;
+		
 	}
 
-	#shotPreview {
+	/*shotPreview {
 		max-width: 100%;
 		max-height: 100%;
+	}*/
+
+	/*.modal-content {
+		width: 1000px !important;
+	}*/
+
+	#containerOfShotOutSide {
+		overflow:hidden;
+		position: relative;
+		padding: 0;
+		max-width: 300px;
+		max-height: 600px;
+		background-color: #000;
 	}
 
-	.modal-content {
-		width: 1000px !important;
+	.containerOfShotPreview {
+		max-width: 300px;
+		max-height: 600px;
 	}
+
+	#cutShotPreview {
+		max-width: 100%;
+		max-height: 100%;
+		transition: all 0.6s;
+	}
+	
+	#cutShotPreview:hover {
+		transform: scale(1.2);
+		opacity: 0.4;
+		cursor:pointer;
+	}
+	 
+	#editForShot {
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 5;
+		/*pointer-events: none;*/
+	}
+
+	#editForShot:hover + #cutShotPreview {
+		transform: scale(1.2);
+		opacity: 0.4;
+	}
+
+	#preview-pane {
+		/*position: absolute;
+		right: 0;*/
+	    overflow: hidden;
+	    margin-left: 3px;
+	    box-shadow: 10px 10px 10px black;
+	    border: 2px solid;
+	}
+
+    #preview-pane .preview-container {
+	    width: 300px;
+	    height: 300px;
+    }
+
+    .jcrop-keymgr {
+		opacity: 0;
+	}
+
+	/*.ShadowForEditPreview {
+		box-shadow: 10px 10px 10px black;
+	}*/
 }
 
 @media (max-width: 768px){
