@@ -65,20 +65,51 @@
                     <h5 class="modal-title" id="modalForUpdateShotTitle">上傳大頭貼</h5>
                 </div>
                 <div class="modal-body">
-                    <form method="post" action="{{ route("uploadShot") }}" id="formForShotUpload" name="formForShotUpload">
+                    <form method="post" action="{{ route("uploadShot") }}" enctype="multipart/form-data" id="formForShotUpload" name="formForShotUpload">
                         {{ csrf_field() }}
                         <input id="shot" name="shot" type="file" onchange="uploadShot(this)" accept="image/gif, image/jpeg, image/jpg, image/png" />
                         <div style="display:none"><button id="submitForShot" type="submit"></button></div> 
                     </form>
-                    <div id="containerOfShotPreview"><img id="shotPreview" src="" style="margin:auto;" /></div>
-                    <!--<label>X: <input type="text" size="4" id="x" name="width"></label>
-                    <label>Y: <input type="text" size="4" id="y" name="width"></label>
-                    <label>Width: <input type="text" size="4" id="w" name="width"></label>
-                    <label>Height: <input type="text" size="4" id="h" name="height"></label>-->   
+                    <div class="containerOfShot" id="containerOfShotPreview"><img class="sizeOfShot" id="shotPreview" src="" /></div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
                     <button type="button" id="submitShot" class="btn btn-primary">Ok</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Modal End -->
+
+    <!-- Modal For Shot Edit -->
+    <div class="modal fade" id="modalForEditShot" tabindex="-1" role="dialog" aria-labelledby="modalForEditEmailTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalForEditShotTitle">編輯大頭貼</h5>
+                </div>
+                <div class="modal-body">
+                    <div style="float:left;">
+                        <img id="jcropShot" src="{{ asset(Auth::user()->shot_path) }}" />
+                    </div>
+                    <form method="post" action="{{ route("editShot") }}" id="coords" name="coords">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="x1" name="x1"/>
+                        <input type="hidden" id="y1" name="y1"/>
+                        <input type="hidden" id="w" name="w"/>
+                        <input type="hidden" id="h" name="h"/>
+                        <div style="display:none"><button id="submitForEditShot" type="submit"></button></div>
+                    </form>
+                    <div id="preview-pane" style="float:left;">
+                        <div class="preview-container">
+                            <img src="{{ asset(Auth::user()->shot_path) }}" class="jcrop-preview" alt="Preview" id="Preview"/>
+                        </div>
+                    </div>
+                    <div style="clear:both;"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">close</button>
+                    <button type="button" id="submitEditShot" class="btn btn-primary">Ok</button>
                 </div>
             </div>
         </div>
@@ -121,10 +152,13 @@
 
                     <div class="row">
                         <label for="shot_cut" class="col-4">{{ __('編輯大頭貼') }}</label>
-
-                        <div class="col text-center" id="containerOfShotOutSide">
-                            <img id="cutShotPreview" src="shot_default.jpeg" style="margin:auto;" />
-                        </div>
+                        @if ( Auth::user()->shot_path != null )
+                            <div class="col hover" id="containerOfShotOutSide">
+                                <button type="button" class="edit btn btn-primary btn-sm" id="editForShot" data-toggle="modal" data-target="#modalForEditShot"><i class="fas fa-pencil-alt"></i>點選編輯</button>
+                                <img id="cutShotPreview" src="{{ asset(Auth::user()->shot_path) }}" onerror="this.src='shot_default.jpeg'" />
+                            </div>
+                        @endif
+                        
                     </div>
                 </div>
             </div>
@@ -136,74 +170,100 @@
             $("#submitName").click(function(){
                 $("#submitForEditName").trigger('click');
             });
-        })
+        });
 
         $(function(){
             $("#submitEmail").click(function(){
                 $("#submitForEditEmail").trigger('click');
             });
-        })
-        
+        });
+        $(function(){
+            $("#cutShotPreview").click(function(){
+                $("#editForShot").trigger('click');
+            });
+        });
+        $(function(){
+            $("#submitShot").click(function(){
+                $("#submitForShot").trigger('click');
+            });
+        });
+        $(function(){
+            $("#submitEditShot").click(function(){
+                $("#submitForEditShot").trigger("click");
+            });
+        });
         //preview for shot
-        var jcropApi;
         function uploadShot(input) {
             if (input.files && input.files[0]) {
                 var reader = new FileReader();
                 reader.onload = function(e) {
                     $('#containerOfShotPreview #shotPreview').remove();
-                    $('#containerOfShotPreview').html('<img id="shotPreview"></img>')
+                    $('#containerOfShotPreview').html('<img class="sizeOfShot" id="shotPreview"/>')
                     $("#shotPreview").attr('src', e.target.result);
-                
-                   /* $('#shotPreview').Jcrop({
-                        onChange: showCoords,
-                        onSelect: showCoords
-                    }, function() {
-                        jcropApi = this;
-                        jcropApi.animateTo([100, 100 ,400, 300]);
-                    });*/
                 }
                 reader.readAsDataURL(input.files[0]);
             }
-        }
+        };
 
-        /*function showCoords(c){
-            $('#x').val(c.x);
-            $('#y').val(c.y);
+        
+
+        //shot edit (Jcrop)
+        var jcrop_api;
+        var boundx;
+        var boundy;
+
+        var $preview = $('#preview-pane');
+        var $pcnt = $('#preview-pane .preview-container');
+
+        var xsize = $pcnt.width();
+        var ysize = $pcnt.height();
+
+
+        console.log('init', [xsize, ysize]);
+
+        function initJcrop(){
+            $('#jcropShot').Jcrop({
+                boxWidth: 600,
+                boxHeight: 600,
+                onChange: updatePreview,
+                onSelect: updatePreview,
+                aspectRatio: xsize / ysize
+            }, function(){
+                var bounds = this.getBounds();
+                boundx = bounds[0];
+                boundy = bounds[1];
+               
+                jcrop_api = this;
+                jcrop_api.animateTo([0, 0, 700, 700]);
+
+                
+
+            });
+        };
+
+        function updatePreview(c){
+            $('#x1').val(c.x);
+            $('#y1').val(c.y);
             $('#w').val(c.w);
             $('#h').val(c.h);
-        }*/
+            if(parseInt(c.w) > 0){
+                
+                var rx = xsize / c.w;
+                var ry = ysize / c.h;
 
-        $(function(){
-            $("#submitShot").click(function(){
-                $("#submitForShot").trigger("click");
-                /*var shot = $('#shot').get(0).files[0];
-                var x = $('#x').val();
-                var y = $('#y').val();
-                var width = $('#w').val();
-                var height = $('#h').val();
-                $.ajax({
-                    type: "POST",
-                    url: "uploadShot",
-                    data: {
-                        shot: $('#shot').val(),
-                        x: $('#x').val(),
-                        y: $('#y').val(),
-                        width: $('#width').val(),
-                        height: $('#height').val(),
-                    },
-                    dataType: 'json',
-                    headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'},
-                    success: function(json){
-                        $('#containerOfShotOutSide #cutShotPreview').remove();
-                        $('#containerOfShotOutSide').html('<img id="cutShotPreview"></img>')
-                        $("#cutShotPreview").attr('src', json.url);
-                    },
-                    error: function(){
-                        alert('WTF');
-                    }
-                })*/
-            });
-        })
+
+                $('#preview-pane .preview-container img').css({
+                    width: Math.round(rx * boundx) + 'px',
+                    height: Math.round(ry * boundy) + 'px',
+                    marginLeft: '-' + Math.round(rx * c.x) + 'px',
+                    marginTop: '-' + Math.round(ry * c.y) + 'px'
+                });
+            }
+        }
+
+        window.onload = function () {
+            initJcrop();
+        };
     </script>
 </div>
 @endsection
