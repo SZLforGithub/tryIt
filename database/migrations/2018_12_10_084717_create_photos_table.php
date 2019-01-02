@@ -17,6 +17,8 @@ class CreatePhotosTable extends Migration
             $table->increments('id');
             $table->string('path');
             $table->string('user');
+            $table->integer('albumID')->nullable();
+            $table->string('editSource')->nullable();
             $table->timestamps();
         });
     }
