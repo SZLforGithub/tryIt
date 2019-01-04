@@ -155,7 +155,11 @@
                         @if ( Auth::user()->shot_path != null )
                             <div class="col hover" id="containerOfShotOutSide">
                                 <button type="button" class="edit btn btn-primary btn-sm" id="editForShot" data-toggle="modal" data-target="#modalForEditShot"><i class="fas fa-pencil-alt"></i>點選編輯</button>
-                                <img id="cutShotPreview" src="{{ asset(Auth::user()->shot_path) }}" onerror="this.src='shot_default.jpeg'" />
+                                @if ($editSource == null)
+                                    <img id = "cutShotPreview" src="{{ asset(Auth::user()->shot_path) }}" />
+                                @else
+                                    <img id="cutShotPreview" src="{{ asset($editSource) }}" />
+                                @endif
                             </div>
                         @endif
                         
