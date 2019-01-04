@@ -19,6 +19,7 @@ class CreatePhotosTable extends Migration
             $table->string('user');
             $table->integer('albumID')->nullable();
             $table->string('editSource')->nullable();
+            $table->string('smallSource')->nullable();
             $table->timestamps();
         });
     }
