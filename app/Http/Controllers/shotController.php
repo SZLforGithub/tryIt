@@ -27,15 +27,16 @@ class shotController extends Controller
     			$path = Storage::putfileAs('public', $shot, $filename);
     			//dd(Storage::url($path));
 
+    			$sourcePath = Storage::url($path);
     			$whoYouAre = Auth::user()->name;
     			//存入資料庫
     			$photo = new photo;
-    			$photo->path = Storage::url($path);
+    			$photo->path = $sourcePath;
     			$photo->user = $whoYouAre;
     			$photo->save();
     			//存入user的shot_path欄位
     			$user = User::where('name', '=', $whoYouAre)->first();
-    			$user->shot_path = Storage::url($path);
+    			$user->shot_path = $sourcePath;
     			$user->save();
     		}
     	}
@@ -54,20 +55,22 @@ class shotController extends Controller
     	$user = User::where('name', '=', $whoYouAre)->first();
 
     	// 去掉url開頭的斜線 才能順利make
-    	$path = $user->shot_path;
-    	$path = substr_replace($path, "", 0, 1);
+    	$sourcePath = $user->shot_path;
+    	$path = substr_replace($sourcePath, "", 0, 1);
 
     	// 建立圖片實例並編輯
     	$filename = date('Y-m-d-H-i-s') . '-' . uniqid();
-    	$editPath = '/storage/'.$filename.'.jpeg';
-    	$img = Image::make($path)->crop($w, $h, $x1, $y1)->save(public_path().$editPath);
+    	$smallFilename = 's' . date('Y-m-d-H-i-s') . '-' . uniqid();
+    	$editPath = 'storage/'.$filename.'.jpeg';
+    	$smallEditPath = '/storage/'.$smallFilename.'.jpeg';
+    	$img = Image::make($path)->crop($w, $h, $x1, $y1)->save(public_path().'/'.$editPath);
+    	$img = Image::make($editPath)->resize(50, 50)->save(public_path().$smallEditPath);
 
-    	//將變更後Shot的Path存入Photos資料表的editSource和Users資料表的shot_path
-    	$photo = Photo::where('path', '=', '/'.$path)->first();
+    	//將裁切後Shot的Path存入Photos資料表的editSource和smallSource
+    	$photo = Photo::where('path', '=', $sourcePath)->first();
     	$photo->editSource = $editPath;
+    	$photo->smallSource = $smallEditPath;
     	$photo->save();
-    	$user->shot_path = $editPath;
-    	$user->save();
 
     	return Redirect('profile');
     }
