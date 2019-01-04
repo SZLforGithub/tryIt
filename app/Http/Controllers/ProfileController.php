@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\User;
+use App\photo;
 use Auth;
 
 class ProfileController extends Controller
@@ -12,8 +13,15 @@ class ProfileController extends Controller
     {
     	if(isset(Auth::user()->name)){
     		$whoYouAre = Auth::user()->name;
-    		$profile = User::where('name', '=', $whoYouAre)->get();
-    		return view('profile', ['profile' => $profile]);
+    		$profile = User::where('name', '=', $whoYouAre)->first();
+    		$sourcePath = $profile->shot_path;
+    		$photo = Photo::where('path', '=', $sourcePath)->first();
+    		if($photo == null)
+    			$editSource = null;
+    		else
+    			$editSource = $photo->editSource;
+    		
+    		return view('profile', ['editSource' => $editSource]);
     	}
     	else
     		return Redirect('login');
