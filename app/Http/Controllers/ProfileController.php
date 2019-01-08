@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\photo;
 use Auth;
+use View;
 
 class ProfileController extends Controller
 {
