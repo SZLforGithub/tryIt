@@ -18,8 +18,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-        //將smallSource傳到app.blade
+        //將smallSource傳到app.blade和home.blade
         view()->composer('layouts.app', function($view) {
+                $view->with('smallSource', $this->getVariable());
+         });
+        view()->composer('home', function($view) {
                 $view->with('smallSource', $this->getVariable());
          });
     }
