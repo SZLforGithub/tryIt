@@ -4,20 +4,85 @@
 <div class="container">
     <div class="row justify-content-center">
         <div class="col-md-8">
-            <div class="card">
-                <div class="card-header">Dashboard</div>
-
+            <div class="card mb-3">
+                <div class="card-header">建立貼文</div>
                 <div class="card-body">
                     @if (session('status'))
                         <div class="alert alert-success" role="alert">
                             {{ session('status') }}
                         </div>
                     @endif
-
-                    You are logged in!
+                    <div class="row">
+                        @if ($smallSource != null)
+                        <div class="col-md-1">
+                            <img id="smallSource" src="{{ asset($smallSource) }}" />
+                        </div>
+                        @endif
+                        <div class="col-md">
+                            <form action="{{ route("create") }}" method="post">
+                                @csrf
+                                <textarea id="post" name="content" class="form-control" rows="3" onclick="changePlaceholder(this)" onblur="changeBack(this)" placeholder="傳說古時候，心裡藏著祕密的人，會跑到樹林裡找一個樹洞，對著樹洞說出秘密，然後用泥土將樹洞填上。"></textarea>
+                                <div class="row justify-content-end"><button type="submit" class="btn btn-primary">發佈</button></div>
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            @foreach ($posts as $post)
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <div class="media">
+                            @if ($smallSource != null)
+                                <img id="smallSource" src="{{ asset($smallSource) }}" />
+                            @endif
+                            <div class="media-body ml-1">
+                                {{ Auth::user()->name }} <br>
+                                <span style="font-size: .8rem; color: #616770">{{ date("Y年m月d日 h:ia", strtotime($post->updated_at)) }}</span>
+                            </div>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-light dropdown-toggle" id="dropForSetting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
+                                <div class="dropdown-menu" aria-labelledby="dropForSetting">
+                                    <a class="dropdown-item" href="#">編輯貼文</a>
+                                    <a class="dropdown-item" style="cursor:pointer" id="post{{$post->id}}" onclick="sureDelete(this)">刪除</a>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="mt-1">{!! $post->content !!}</p>
+                    </div>
+                </div>
+            @endforeach
         </div>
     </div>
+    <script>
+        function sureDelete(object) {
+            swal({
+                text: "刪除後將無法復原，確認要刪除此貼文？",
+                icon: "warning",
+                buttons: true,
+                dangerMode: true,
+            })
+            .then((willDelete) => {
+                if (willDelete) {
+                    swal("這則貼文就像所有你愛的一樣，永遠離你而去了。", {
+                        icon: "success",
+                    })
+                    .then((value) => {
+                        let getId = $(object).attr('id');
+                        location.replace(getId.concat("/delete"));
+                    });
+                } else {
+                    swal("它值得。");
+                }
+            });
+        }
+
+        function changePlaceholder(object) {
+            $(object).attr('placeholder', '{{Auth::user()->name}}，你也有祕密嗎？');
+        }
+        function changeBack(object) {
+            $(object).attr('placeholder', '傳說古時候，心裡藏著祕密的人，會跑到樹林裡找一個樹洞，對著樹洞說出秘密，然後用泥土將樹洞填上。');
+        }
+    </script>
 </div>
 @endsection
