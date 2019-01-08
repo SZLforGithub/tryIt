@@ -86,9 +86,20 @@
 		border-radius: 50%;
 	}
 
-	/*.ShadowForEditPreview {
-		box-shadow: 10px 10px 10px black;
-	}*/
+	textarea {
+		resize: none !important;
+		border: 0 !important;
+	}
+
+	#post:focus {
+		border: 0 !important;
+		-webkit-box-shadow: none !important;
+	}
+
+	.dropdown-toggle:after {
+		border: none !important;
+		content: "" !important;
+	}
 }
 
 @media (max-width: 768px){
