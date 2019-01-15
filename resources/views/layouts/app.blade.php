@@ -33,6 +33,9 @@
     <!-- sweetalert -->
     <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
+    <!-- autoSize -->
+    <script src="{{ asset('js/autosize.min.js') }}" defer></script>
+
 </head>
 <body>
     <div id="app">
