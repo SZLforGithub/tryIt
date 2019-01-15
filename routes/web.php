@@ -26,3 +26,4 @@ Route::post('/editShot', 'shotController@editShot')->name('editShot');
 
 Route::post('create', 'HomeController@create')->name('create');
 Route::get('/post{id}/delete', 'HomeController@destroy')->name('delete');
+Route::post('/post{id}/edit', 'HomeController@edit')->name('edit');
