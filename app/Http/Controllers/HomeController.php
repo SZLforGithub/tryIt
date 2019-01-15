@@ -47,6 +47,20 @@ class HomeController extends Controller
         return Redirect('home');
     }
 
+    public function edit(Request $request, $id)
+    {
+        $post = post::find($id);
+        $content = nl2br($request->content);
+        $post->content = $content;
+        $post->save();
+
+        $post_backup = post_backup::find($id);
+        $post_backup->content = $content;
+        $post_backup->save();
+
+        return Redirect('home');
+    }
+
     public function destroy($id)
     {
        post::destroy($id);
