@@ -86,7 +86,7 @@
 		border-radius: 50%;
 	}
 
-	textarea {
+	#post {
 		resize: none !important;
 		border: 0 !important;
 	}
@@ -99,6 +99,31 @@
 	.dropdown-toggle:after {
 		border: none !important;
 		content: "" !important;
+	}
+
+	.postEdit {
+		width: 100%;
+		height:100%;
+		top: 0;
+		left: 0;
+		position: absolute;
+		resize : none;
+		overflow: hidden;
+	}
+
+	pre {
+		font-size: 100% !important;
+	}
+
+	.containerOfTextarea {
+		position: relative;
+	}
+
+	#forAutoResize {
+		visibility: hidden;
+		width: 100%;
+		white-space: normal;
+		display: block;
 	}
 }
 
