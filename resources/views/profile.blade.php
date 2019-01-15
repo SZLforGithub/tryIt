@@ -11,7 +11,7 @@
                     <h5 class="modal-title" id="modalForEditNameTitle">修改姓名</h5>
                 </div>
                 <div class="modal-body">
-                    <form class="was-validated"  action="{{ route("edit") }}" method="post" required>
+                    <form class="was-validated" action="{{ route("edit") }}" method="post" required>
                         {{ csrf_field() }}
                         <div class="form-group">
                             <label for="name">姓名</label>
