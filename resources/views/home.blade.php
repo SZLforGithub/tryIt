@@ -48,9 +48,12 @@
                         </div>
                         @endif
                         <div class="col-md">
-                            <form action="{{ route("create") }}" method="post">
+                            <form action="{{ route("create") }}" method="post" enctype="multipart/form-data">
                                 @csrf
                                 <textarea id="post" name="content" class="form-control" rows="3" onclick="changePlaceholder(this)" onblur="changeBack(this)" placeholder="傳說古時候，心裡藏著祕密的人，會跑到樹林裡找一個樹洞，對著樹洞說出秘密，然後用泥土將樹洞填上。"></textarea>
+                                <button id="buttonPhotoForPost" type="button" style="border-radius:10px; margin-bottom:10px;" class="btn btn-outline-secondary btn-sm"><img src="https://img.icons8.com/doodle/30/000000/picture.png">上傳圖片</button>
+                                <input id="photoForPost" name="photoForPost" style="display:none;" type="file" onchange="uploadPhoto(this)" accept="image/gif, image/jpeg, image/jpg, image/png" />
+                                <div id="containerOfPhotoPreview"><img id="photoPreview" /></div>
                                 <div class="row justify-content-end"><button type="submit" class="btn btn-primary">發佈</button></div>
                             </form>
                         </div>
@@ -78,13 +81,20 @@
                             </div>
                         </div>
                         <p class="mt-1">{!! $post->content !!}</p>
+                        @if ($post->path!=null)
+                            <div style="height: 100%; width: 100%;"><img style="height: 100%; width: 100%;" src="{{asset($post->path)}}"></div>
+                        @endif
                     </div>
                 </div>
             @endforeach
         </div> 
     </div>
     <script>
-        
+
+        $(function() {
+            autosize($('#post'));
+        }); 
+
         function sureDelete(object) {
             swal({
                 text: "刪除後將無法復原，確認要刪除此貼文？",
@@ -146,7 +156,22 @@
             $("#submitPostEdit").click(function(){
                 $("#submitForPostEdit").trigger("click");
             })
+            $("#buttonPhotoForPost").click(function(){
+                $("#photoForPost").trigger("click");
+            })
         })
+
+        function uploadPhoto(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#containerOfPhotoPreview #photoPreview').remove();
+                    $('#containerOfPhotoPreview').html('<img id="photoPreview"/>')
+                    $("#photoPreview").attr('src', e.target.result);
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        };
 
     </script>
 </div>
