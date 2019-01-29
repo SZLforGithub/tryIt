@@ -51,12 +51,20 @@
 	}
 	 
 	#editForShot {
+		border-radius: 100px;
+		border-width: 2px;
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 		z-index: 5;
 		/*pointer-events: none;*/
+	}
+
+	#editForShot:hover {
+		border-radius: 100px;
+		background-color: rgba(235, 97, 0, .9) !important;
+		color: white !important;
 	}
 
 	#editForShot:hover + #cutShotPreview {
@@ -124,6 +132,21 @@
 		width: 100%;
 		white-space: normal;
 		display: block;
+	}
+
+	#containerOfPhotoPreview {
+		max-height: 100px;
+		max-width: 100px;
+	}
+
+	#photoPreview {
+		height: 100%;
+		width: 100%;
+	}
+
+	#containerOfStoriesShot {
+		max-width: 300px;
+		max-height: 600px;
 	}
 }
 
