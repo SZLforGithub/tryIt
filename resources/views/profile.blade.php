@@ -154,7 +154,7 @@
                         <label for="shot_cut" class="col-4">{{ __('編輯大頭貼') }}</label>
                         @if ( Auth::user()->shot_path != null )
                             <div class="col hover" id="containerOfShotOutSide">
-                                <button type="button" class="edit btn btn-primary btn-sm" id="editForShot" data-toggle="modal" data-target="#modalForEditShot"><i class="fas fa-pencil-alt"></i>點選編輯</button>
+                                <button type="button" class="edit btn btn-outline-light" id="editForShot" data-toggle="modal" data-target="#modalForEditShot"><i class="fas fa-pencil-alt"></i>點選編輯</button>
                                 @if ($editSource == null)
                                     <img id = "cutShotPreview" src="{{ asset(Auth::user()->shot_path) }}" />
                                 @else
