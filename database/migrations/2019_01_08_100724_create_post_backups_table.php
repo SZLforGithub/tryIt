@@ -17,7 +17,6 @@ class CreatePostBackupsTable extends Migration
             $table->increments('id');
             $table->string('poster');
             $table->longText('content');
-            $table->string('photos_path')->nullable();
             $table->timestamps();
         });
     }
