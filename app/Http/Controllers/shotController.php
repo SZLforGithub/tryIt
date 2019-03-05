@@ -37,6 +37,7 @@ class shotController extends Controller
     			// 存入資料庫
     			$photo = new photo;
     			$photo->path = $sourcePath;
+                $photo->editSource = $sourcePath;
     			$photo->user = $whoYouAre;
     			$photo->save();
     			// 存入user的shot_path欄位
