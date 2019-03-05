@@ -23,10 +23,10 @@ class StoryController extends Controller
     	$user = User::where('name', '=', $whoYouAre)->first();
     	$photoPath = Photo::where('path', '=', $user->shot_path)->first();
     	$posts = DB::select(
-            "   SELECT posts.id, posts.poster, posts.content, posts.created_at, posts.updated_at, post_photos.photoId01, photos.path
+            "   SELECT posts.id, posts.poster, posts.content, posts.created_at, posts.updated_at, post_photos.photoId, photos.path
                 FROM posts
                 LEFT JOIN post_photos ON posts.id = post_photos.postId
-                LEFT JOIN photos ON post_photos.photoId01 = photos.id
+                LEFT JOIN photos ON post_photos.photoId = photos.id
                 WHERE poster = '$whoYouAre'
         ");
 
