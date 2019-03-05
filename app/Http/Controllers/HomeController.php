@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+//use Illuminate\Http\Request;
+use Request;
 use App\Post;
 use App\Post_backup;
 use App\photo;
@@ -30,22 +31,26 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = DB::select(
+        /*$posts = DB::select(
             '   SELECT posts.id, posts.poster, posts.content, posts.created_at, posts.updated_at, post_photos.photoId01, photos.path
                 FROM posts
                 LEFT JOIN post_photos ON posts.id = post_photos.postId
                 LEFT JOIN photos ON post_photos.photoId01 = photos.id
-        ');
+        ');*/
+        $posts = POST::all();
         //dd($posts);
+        $posts->toArray();
         return view('home', ['posts' => $posts]);
     }
 
     public function create(Request $request)
     {
+        $request = $request::all();
+
         // 存入posts & post_backups資料表
         $post = new post;
         $post->poster = Auth::user()->name;
-        $content = nl2br($request->content);
+        $content = nl2br($request['content']);
         $post->content = $content;
         $post->save();
 
@@ -55,25 +60,48 @@ class HomeController extends Controller
         $post_backup->save();
 
         // 處理圖片
-        // TODO uploads more than one photos?
-        if ($request->file('photoForPost') != null){
-            // 獲取photo資訊
-            $photo = $request->file('photoForPost');
-            $ext = $photo->getClientOriginalExtension();
-            // 上傳圖片並將路徑存入photos資料表
-            $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' .$ext;
-            $path = Storage::putfileAs('public', $photo, $filename);
-            $sourcePath = Storage::url($path);
-            $whoYouAre = Auth::user()->name;
-            $photo = new photo;
-            $photo->path = $sourcePath;
-            $photo->user = $whoYouAre;
-            $photo->save();
-            // 將postsId & photoId存入post_photos資料表
-            $post_photo = new post_photo;
-            $post_photo->postId = $post->id;
-            $post_photo->photoId01 = $photo->id;
-            $post_photo->save();
+        if (isset($request['photoForPost'])){
+
+            $howManyPhotos = sizeof($request['photoForPost']);
+
+            foreach ($request['photoForPost'] as $key => $photoForPost) {
+                // 獲取photo資訊
+                $photo = $photoForPost;
+                $ext = $photo->getClientOriginalExtension();
+                // 上傳圖片並將路徑存入photos資料表
+                $filename = date('Y-m-d-H-i-s') . '-' . $key . uniqid() . '.' . $ext;
+                $path = Storage::putfileAs('public', $photo, $filename);
+                $sourcePath = Storage::url($path);
+                $whoYouAre = Auth::user()->name;
+                $photo = new photo;
+                $photo->path = $sourcePath;
+                $photo->user = $whoYouAre;
+                $photo->save();
+
+                // 將postsId & photoId存入post_photos資料表
+                $post_photo = new post_photo;
+                $post_photo->postId = $post->id;
+                $post_photo->photoId = $photo->id;
+                $post_photo->save();
+            }
+                /*// 獲取photo資訊
+                $photo = $request['photoForPost'];
+                $ext = $photo->getClientOriginalExtension();
+                // 上傳圖片並將路徑存入photos資料表
+                $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' .$ext;
+                $path = Storage::putfileAs('public', $photo, $filename);
+                $sourcePath = Storage::url($path);
+                $whoYouAre = Auth::user()->name;
+                $photo = new photo;
+                $photo->path = $sourcePath;
+                $photo->user = $whoYouAre;
+                $photo->save();
+
+                // 將postsId & photoId存入post_photos資料表
+                $post_photo = new post_photo;
+                $post_photo->postId = $post->id;
+                $post_photo->photoId = $photo->id;
+                $post_photo->save();*/
         }
 
         return Redirect('home');

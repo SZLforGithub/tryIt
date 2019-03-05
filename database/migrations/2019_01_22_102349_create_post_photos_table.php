@@ -14,11 +14,14 @@ class CreatePostPhotosTable extends Migration
     public function up()
     {
         Schema::create('post_photos', function (Blueprint $table) {
-            $table->integer('postId');
-            $table->integer('photoId01');
+            $table->integer('postId')->unsigned();
+            $table->foreign('postId')->references('id')->on('posts')->onUpdate('cascade');
+            $table->integer('photoId')->unsigned();
+            $table->foreign('photoId')->references('id')->on('photos')->onUpdate('cascade');
+            /*$table->integer('photoId01');
             $table->integer('photoId02')->nullable();
             $table->integer('photoId03')->nullable();
-            $table->integer('photoId04')->nullable();
+            $table->integer('photoId04')->nullable();*/
         });
     }
 
