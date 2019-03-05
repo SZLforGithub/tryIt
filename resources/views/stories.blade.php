@@ -5,10 +5,14 @@
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="text-center" style="margin:0px auto;" id="containerOfStoriesShot">
-                <img src="{{ asset($photoPath->editSource) }}" style="width:100%; height:100%; border-radius:50%;"/>
+
+                @if ($photoPath != null)
+                    <img src="{{ asset($photoPath->editSource) }}" style="width:100%; height:100%; border-radius:50%;"/>
+                @endif
+
                 <h1>{{Auth::user()->name}}</h1>
             </div>
-            @foreach ($posts as $post)
+            @foreach (array_reverse($posts) as $post)
                 <div class="card mb-3">
                     <div class="card-body">
                         <div class="media">

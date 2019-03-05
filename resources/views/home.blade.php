@@ -48,13 +48,14 @@
                         </div>
                         @endif
                         <div class="col-md">
-                            <form action="{{ route("create") }}" method="post" enctype="multipart/form-data">
+                            <form action="{{ route("create") }}" name="formForPost" method="post" enctype="multipart/form-data">
                                 @csrf
-                                <textarea id="post" name="content" class="form-control" rows="3" onclick="changePlaceholder(this)" onblur="changeBack(this)" placeholder="傳說古時候，心裡藏著祕密的人，會跑到樹林裡找一個樹洞，對著樹洞說出秘密，然後用泥土將樹洞填上。"></textarea>
+                                <textarea id="post" name="content" class="form-control" rows="3" onclick="changePlaceholder(this)" onblur="changeBack(this)" placeholder="傳說古時候，心裡藏著祕密的人，會跑到樹林裡找一個樹洞，對著樹洞說出秘密，然後用泥土將樹洞填上。" required="required"></textarea>
                                 <button id="buttonPhotoForPost" type="button" style="border-radius:10px; margin-bottom:10px;" class="btn btn-outline-secondary btn-sm"><img src="https://img.icons8.com/doodle/30/000000/picture.png">上傳圖片</button>
-                                <input id="photoForPost" name="photoForPost" style="display:none;" type="file" onchange="uploadPhoto(this)" accept="image/gif, image/jpeg, image/jpg, image/png" />
-                                <div id="containerOfPhotoPreview"><img id="photoPreview" /></div>
-                                <div class="row justify-content-end"><button type="submit" class="btn btn-primary">發佈</button></div>
+                                <br>
+                                <input id="photoForPost" name="photoForPost[]" style="display:none;" type="file" onchange="uploadPhoto(this)" onclick="clearPhoto()" accept="image/gif, image/jpeg, image/jpg, image/png" multiple/>
+                                
+                                <div class="row justify-content-end" id="containerOfSubmitPost"><button type="submit" class="btn btn-primary">發佈</button></div>
                             </form>
                         </div>
                     </div>
@@ -163,15 +164,23 @@
 
         function uploadPhoto(input) {
             if (input.files && input.files[0]) {
-                var reader = new FileReader();
-                reader.onload = function(e) {
-                    $('#containerOfPhotoPreview #photoPreview').remove();
-                    $('#containerOfPhotoPreview').html('<img id="photoPreview"/>')
-                    $("#photoPreview").attr('src', e.target.result);
+                for(var i=0; i<input.files.length; i++){
+                    var reader = new FileReader();
+                    reader.onload = function(e) {
+                        //$('.containerOfPhotoPreview .photoPreview').remove();
+                        //$('.containerOfPhotoPreview').html('<img class="photoPreview"/>')
+                        //'$(".photoPreview").attr('src', e.target.result);
+                        //$("<div class='containerOfPhotoPreview'><img class='photoPreview' src='" + e.target.result + "' /></div>").insertBefore('#containerOfSubmitPost');
+                        $("<div class='containerOfPhotoPreview'><div class='photoPreview' style='background:url(" + e.target.result + ")'></div></div>").insertBefore('#containerOfSubmitPost');
+                    }
+                    reader.readAsDataURL(input.files[i]);
                 }
-                reader.readAsDataURL(input.files[0]);
             }
         };
+
+        function clearPhoto() {
+            $('.containerOfPhotoPreview').remove();
+        }
 
     </script>
 </div>

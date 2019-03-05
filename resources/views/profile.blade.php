@@ -67,7 +67,7 @@
                 <div class="modal-body">
                     <form method="post" action="{{ route("uploadShot") }}" enctype="multipart/form-data" id="formForShotUpload" name="formForShotUpload">
                         {{ csrf_field() }}
-                        <input id="shot" name="shot" type="file" onchange="uploadShot(this)" accept="image/gif, image/jpeg, image/jpg, image/png" />
+                        <input id="shot" name="shot" type="file" onchange="uploadShot(this)" accept="image/gif, image/jpeg, image/jpg, image/png" required="required"/>
                         <div style="display:none"><button id="submitForShot" type="submit"></button></div> 
                     </form>
                     <div class="containerOfShot" id="containerOfShotPreview"><img class="sizeOfShot" id="shotPreview" src="" /></div>
@@ -158,11 +158,10 @@
                                 @if ($editSource == null)
                                     <img id = "cutShotPreview" src="{{ asset(Auth::user()->shot_path) }}" />
                                 @else
-                                    <img id="cutShotPreview" src="{{ asset($editSource) }}" />
+                                    <img id = "cutShotPreview" src="{{ asset($editSource) }}" />
                                 @endif
                             </div>
                         @endif
-                        
                     </div>
                 </div>
             </div>
@@ -208,8 +207,6 @@
                 reader.readAsDataURL(input.files[0]);
             }
         };
-
-        
 
         //shot edit (Jcrop)
         var jcrop_api;
