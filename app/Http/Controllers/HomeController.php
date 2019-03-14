@@ -31,16 +31,15 @@ class HomeController extends Controller
      */
     public function index()
     {
-        /*$posts = DB::select(
-            '   SELECT posts.id, posts.poster, posts.content, posts.created_at, posts.updated_at, post_photos.photoId01, photos.path
-                FROM posts
-                LEFT JOIN post_photos ON posts.id = post_photos.postId
-                LEFT JOIN photos ON post_photos.photoId01 = photos.id
-        ');*/
         $posts = POST::all();
-        //dd($posts);
-        $posts->toArray();
-        return view('home', ['posts' => $posts]);
+        $posts = $posts->toArray();
+
+        $photos = DB::table('post_photos')
+                     ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
+                    ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
+                    ->get();
+        //dd($photos);
+        return view('home', ['posts' => $posts], ['photos' => $photos]);
     }
 
     public function create(Request $request)
@@ -61,9 +60,6 @@ class HomeController extends Controller
 
         // 處理圖片
         if (isset($request['photoForPost'])){
-
-            $howManyPhotos = sizeof($request['photoForPost']);
-
             foreach ($request['photoForPost'] as $key => $photoForPost) {
                 // 獲取photo資訊
                 $photo = $photoForPost;
@@ -84,24 +80,6 @@ class HomeController extends Controller
                 $post_photo->photoId = $photo->id;
                 $post_photo->save();
             }
-                /*// 獲取photo資訊
-                $photo = $request['photoForPost'];
-                $ext = $photo->getClientOriginalExtension();
-                // 上傳圖片並將路徑存入photos資料表
-                $filename = date('Y-m-d-H-i-s') . '-' . uniqid() . '.' .$ext;
-                $path = Storage::putfileAs('public', $photo, $filename);
-                $sourcePath = Storage::url($path);
-                $whoYouAre = Auth::user()->name;
-                $photo = new photo;
-                $photo->path = $sourcePath;
-                $photo->user = $whoYouAre;
-                $photo->save();
-
-                // 將postsId & photoId存入post_photos資料表
-                $post_photo = new post_photo;
-                $post_photo->postId = $post->id;
-                $post_photo->photoId = $photo->id;
-                $post_photo->save();*/
         }
 
         return Redirect('home');

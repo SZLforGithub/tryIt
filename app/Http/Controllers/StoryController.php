@@ -22,14 +22,14 @@ class StoryController extends Controller
     	$whoYouAre = Auth::user()->name;
     	$user = User::where('name', '=', $whoYouAre)->first();
     	$photoPath = Photo::where('path', '=', $user->shot_path)->first();
-    	$posts = DB::select(
-            "   SELECT posts.id, posts.poster, posts.content, posts.created_at, posts.updated_at, post_photos.photoId, photos.path
-                FROM posts
-                LEFT JOIN post_photos ON posts.id = post_photos.postId
-                LEFT JOIN photos ON post_photos.photoId = photos.id
-                WHERE poster = '$whoYouAre'
-        ");
+        $posts = POST::all();
+        $posts = $posts->toArray();
 
-    	return view('stories',  ['posts' => $posts], ['photoPath' => $photoPath]);
+        $photos = DB::table('post_photos')
+                     ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
+                    ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
+                    ->get();
+
+    	return view('stories',  ['posts' => $posts, 'photos' => $photos, 'photoPath' => $photoPath]);
     }
 }
