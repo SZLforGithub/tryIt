@@ -39,7 +39,7 @@ class HomeController extends Controller
                     ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
                     ->get();
         //dd($photos);
-        return view('home', ['posts' => $posts], ['photos' => $photos]);
+        return view('home', ['posts' => $posts, 'photos' => $photos]);
     }
 
     public function create(Request $request)
