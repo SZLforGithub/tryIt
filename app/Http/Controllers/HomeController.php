@@ -35,7 +35,7 @@ class HomeController extends Controller
         $posts = $posts->toArray();
 
         $photos = DB::table('post_photos')
-                     ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
+                    ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
                     ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
                     ->get();
         //dd($photos);

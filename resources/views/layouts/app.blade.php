@@ -37,11 +37,6 @@
     <script src="{{ asset('js/autosize.min.js') }}" defer></script>
 
     <!-- Swiper Slider -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/css/swiper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Swiper/4.5.0/js/swiper.min.js"></script>
-
     <link href="{{ asset('css/swiper.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/swiper.min.js') }}" defer></script>
 
