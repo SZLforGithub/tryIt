@@ -11,6 +11,7 @@ use App\post_photo;
 use Auth;
 use Storage;
 use DB;
+use Illuminate\Support\Facades\Redis;
 
 class HomeController extends Controller
 {
@@ -31,30 +32,49 @@ class HomeController extends Controller
      */
     public function index()
     {
-        $posts = POST::all();
-        $posts = $posts->toArray();
+    	$friend_relations = DB::table('friend_relations')
+    				->select('userId1', 'userId2')
+    				->where('userId1', '=', Auth::user()->id)
+    				->orwhere('userId2', '=', Auth::user()->id)
+    				->get();
+    	foreach ($friend_relations as $key => $friend_relation) {
+    		if ($friend_relation->userId1 != Auth::user()->id){
+            	$friendId[$key] = $friend_relation->userId1;
+    		}
+            else if ($friend_relation->userId2 != Auth::user()->id){
+            	$friendId[$key] = $friend_relation->userId2;
+            }
+        }
+		
+        $posts = DB::table('posts')
+                    ->select('users.name', 'posts.*', 'users.shot_path', 'photos.smallSource')
+                    ->leftJoin('users', 'posts.posterId', '=', 'users.id')
+                    ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
+                    ->whereIn('users.id', $friendId)
+                    ->orderBy('id', 'desc')
+                    ->get();
 
         $photos = DB::table('post_photos')
                     ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
                     ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
                     ->get();
-        //dd($photos);
         return view('home', ['posts' => $posts, 'photos' => $photos]);
     }
 
     public function create(Request $request)
     {
+
         $request = $request::all();
 
         // 存入posts & post_backups資料表
         $post = new post;
-        $post->poster = Auth::user()->name;
+        $post->posterId = Auth::user()->id;
         $content = nl2br($request['content']);
         $post->content = $content;
         $post->save();
 
         $post_backup = new post_backup;
-        $post_backup->poster = Auth::user()->name;
+        $post_backup->posterId = Auth::user()->id;
         $post_backup->content = $content;
         $post_backup->save();
 
@@ -68,7 +88,7 @@ class HomeController extends Controller
                 $filename = date('Y-m-d-H-i-s') . '-' . $key . uniqid() . '.' . $ext;
                 $path = Storage::putfileAs('public', $photo, $filename);
                 $sourcePath = Storage::url($path);
-                $whoYouAre = Auth::user()->name;
+                $whoYouAre = Auth::user()->id;
                 $photo = new photo;
                 $photo->path = $sourcePath;
                 $photo->user = $whoYouAre;
@@ -87,8 +107,9 @@ class HomeController extends Controller
 
     public function edit(Request $request, $id)
     {
+        $request = $request::all();
+        $content = nl2br($request['content']);
         $post = post::find($id);
-        $content = nl2br($request->content);
         $post->content = $content;
         $post->save();
 
@@ -97,11 +118,5 @@ class HomeController extends Controller
         $post_backup->save();
 
         return Redirect('home');
-    }
-
-    public function destroy($id)
-    {
-       post::destroy($id);
-       return Redirect('home');
     }
 }

@@ -19,7 +19,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
         
-        //將smallSource傳到app.blade和home.blade
+        //將smallSource傳到app.blade home.blade stories.blade
         view()->composer('layouts.app', function($view) {
                 $view->with('smallSource', $this->getVariable());
          });
@@ -52,6 +52,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        if ($this->app->environment() == 'local')
+        {
+            $this->app->register('Barryvdh\Debugbar\ServiceProvider');
+        }
     }
 }

@@ -13,7 +13,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- jQuery -->
-    <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+    <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -40,6 +40,10 @@
     <link href="{{ asset('css/swiper.min.css') }}" rel="stylesheet">
     <script src="{{ asset('js/swiper.min.js') }}" defer></script>
 
+    <!-- jQuery UI -->
+    <link href="{{ asset('css/jquery-ui.css') }}" rel="stylesheet">
+    <script src="{{ asset('js/jquery-ui.js') }}" defer></script>
+
 </head>
 <body>
     <div id="app">
@@ -54,9 +58,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
-                    <ul class="navbar-nav mr-auto">
-
-                    </ul>
+                    
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
@@ -71,26 +73,40 @@
                                 </li>
                             @endif
                         @else
+                        	@auth
+			                    <ul class="navbar-nav mr-auto">
+			                        <form class="form-inline my-2 my-lg-0" action="{{ route('search') }}" method="POST">
+			                        	@csrf
+			                            <div class="input-group">
+			                                <div class="input-group-prepend">
+			                                    <div class="input-group-text"><i class="fas fa-search"></i></div>
+			                                </div>
+			                                <input class="form-control mr-2" id="search" name="search" type="search" placeholder="Search" aria-label="Search">
+			                                <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
+			                            </div>
+			                        </form>
+			                    </ul>
+		                    @endauth
                             <li class="nav-item dropdown">
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     @if ($smallSource != null)
-                                        <img id="smallSource" src="{{ asset($smallSource) }}" />
+                                        <img class="smallSource" src="{{ asset($smallSource) }}" />
                                     @endif
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
                                     <a class="dropdown-item" href="{{ route('stories', ['whoYouAre' => Auth::user()->name]) }}">
-                                        {{ __('Stories') }}
+                                        {{ __('Your Stories') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('profile') }}">
-                                        {{ __('個人資料') }}
+                                        {{ __('Profile') }}
                                     </a>
 
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
-                                        {{ __('登出') }}
+                                        {{ __('Logout') }}
                                     </a>
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
@@ -108,5 +124,24 @@
             @yield('content')
         </main>
     </div>
+    <script>
+	    $(function() {
+        	var searchTags = [
+        		"Apple",
+        		"Basic",
+        		"C++",
+        		"Docker",
+        		"Elementor",
+        		"For",
+        	];
+
+        	$("#search").autocomplete({
+        		source: '{!! URL::route('autocomplete') !!}',
+        		minLength: 1,
+        		autoFocus:true,
+
+        	});
+        });
+    </script>
 </body>
 </html>

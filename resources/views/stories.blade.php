@@ -39,51 +39,51 @@
                     <img src="{{ asset($photoPath->editSource) }}" id="StoriesShot"/>
                 @endif
 
-                <h1>{{Auth::user()->name}}</h1>
+                <h1>{{$user->name}}</h1>
             </div>
-            @foreach (array_reverse($posts) as $post)
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <div class="media">
-                            @if ($smallSource != null)
-                                <img id="smallSource" src="{{ asset($smallSource) }}" />
-                            @endif
-                            <div class="media-body ml-1">
-                                {{ Auth::user()->name }} <br>
-                                <span style="font-size: .8rem; color: #616770">{{ date("Y年m月d日 h:ia", strtotime($post['updated_at'])) }}</span>
+
+            <div class="row text-center">
+                @if ($user->name != Auth::user()->name && $areYouFriend == 'N')
+                    <div class="col-md">
+                        <button id="buttonOfAddFriend" type="button" onclick="addFriend(this)" name="{{$user->id}}" style="border-radius:10%; margin-bottom:10px;" class="btn btn-outline-secondary btn-sm"><i id="imgOfAddFriend" style="margin: 5px" class="fas fa-user-plus fa-2x"></i></button>
+                    </div>
+                @endif
+
+                @if ($user->name != Auth::user()->name && $areYouFriend == 'add')
+                    <div class="col-md">
+                        <button type="button" onclick="" name="{{$user->id}}" style="border-radius:10%; margin-bottom:10px;" class="btn btn-outline-primary btn-sm"><i id="imgOfSend" style="margin: 5px" class="fas fa-sign-out-alt fa-2x"></i></button>
+                    </div>
+                @endif
+                
+                @if ($user->name != Auth::user()->name)
+                    <div class="col-md">
+                        <button type="button" style="border-radius:25%; margin-bottom:10px;" class="btn btn-outline-secondary btn-sm"><i style="margin: 5px" class="fas fa-comment-dots fa-2x"></i></button>
+                    </div>
+                @endif
+            </div>
+            
+            @if ($user->name == Auth::user()->name)
+                <!-- TODO answer add friend -->
+                @foreach ($anyAddFriend as $someoneAddYou)
+                    <div class="alert {{ $someoneAddYou->name }} alert-success fade show" role="alert">
+                        <div class="row">
+                            <div class="col">
+                                @if ($someoneAddYou->smallSource != null)
+                                    <a href="{{ route('stories', ['whoYouAre' => $someoneAddYou->name]) }}"><img class="smallSource" src="{{ asset($someoneAddYou->smallSource) }}" /></a>
+                                @endif
+                                <b><a href="{{ route('stories', ['whoYouAre' => $someoneAddYou->name]) }}">{{ $someoneAddYou->name }}</a></b>向您提出了好友邀請
                             </div>
-                            <div class="dropdown">
-                                <button type="button" class="btn btn-light dropdown-toggle" id="dropForSetting" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><i class="fas fa-ellipsis-h"></i></button>
-                                <div class="dropdown-menu" aria-labelledby="dropForSetting">
-                                    <button id="editForPost" class="dropdown-item" data-toggle="modal" data-target="#modalForEditPost" data-postcontent="{{$post['content']}}"  data-postid="{{$post['id']}}">編輯貼文</button>
-                                    <a class="dropdown-item" style="cursor:pointer" id="post{{$post['id']}}" onclick="sureDelete(this)">刪除</a>
-                                </div>
+                            <div class="ml-auto">
+                                <button type="button" onclick="agreeAddFriend(this)" class="btn btn-primary {{ $someoneAddYou->name }}" name="{{ $someoneAddYou->userId1 }}">好啊</button>
+                                <button type="button" onclick="rejectAddFriend(this)" class="btn btn-danger {{ $someoneAddYou->name }}" name="{{ $someoneAddYou->userId1 }}">滾</button>
                             </div>
                         </div>
-
-                        <p class="mt-1">{!! $post['content'] !!}</p>
-                        @for ($i=0; $i<count($photos); $i++)
-                            @if ($post['id'] === ($photos[$i]->postId))
-                                <!-- Slider main container -->
-                                <div class="swiper-container">
-                                    <div class="swiper-pagination swiper-pagination-white"></div>
-                                    <div class="swiper-button-prev swiper-button-white"></div>
-                                    <div class="swiper-button-next swiper-button-white"></div>
-                                    <div class="swiper-wrapper">
-                                        <!-- Slides -->
-                                        @foreach ($photos as $photo)
-                                            @if ($post['id'] === ($photo->postId))
-                                                <div class="swiper-slide"><img class="ImgInSwiper" src="{{asset($photo->path)}}"/></div>
-                                            @endif
-                                        @endforeach
-                                    </div>
-                                </div>
-                                @break
-                            @endif
-                        @endfor
                     </div>
-                </div>
-            @endforeach
+                @endforeach
+            @endif
+
+            @include('components/post')
+
         </div>
     </div>
     <script>
@@ -126,7 +126,19 @@
                     })
                     .then((value) => {
                         let getId = $(object).attr('id');
-                        location.replace(getId.concat("/delete"));
+                        $.ajax({
+                            type: "POST",
+                            url: "ajax/delete",
+                            data: { id: getId },
+                            dataType: 'json',
+                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
+                            success: function(json){
+                                window.location.reload();
+                            },
+                            error: function(xhr, ajaxOptions, thrownError){
+                                alert(xhr.responseText);
+                            }
+                        })
                     });
                 } else {
                     swal("它值得。");
@@ -134,12 +146,78 @@
             });
         };
 
+        function agreeAddFriend(object) {
+            $(object).alert('close');
+            let getId = $(object).attr('name');
+
+            $.ajax({
+                type: "POST",
+                url: '{{ url("ajax/agreeAddFriend") }}',
+                data: { id: getId },
+                dataType: 'text',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                success: function(json){
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.responseText);
+                }
+            })
+
+            swal({
+                title: "世間所有的相遇，都是久別重逢", 
+                icon: "success"
+            });
+        }
+
+        function rejectAddFriend(object) {
+            $(object).alert('close');
+            let getId = $(object).attr('name');
+
+            $.ajax({
+                type: "POST",
+                url: '{{ url("ajax/rejectAddFriend") }}',
+                data: { id: getId },
+                dataType: 'text',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                success: function(json){
+                },
+                error: function(xhr, ajaxOptions, thrownError){
+                    alert(xhr.responseText);
+                }
+            })
+
+            swal({
+                title: "囂張屁",
+                icon: "error"
+            })
+        }
+
         function synchronizeText(object) {
             var content = $(object).val();
             content = content.replace(/\u200B/g, "");
             content = content.replace(/\n/g, "<br \/>");
             $('#forAutoResize').html(content);
             autosize($('#postEdit'));
+        }
+
+        function addFriend(object) {
+            $.ajax({
+                type: "POST",
+                url: '{{ url("ajax/addFriend") }}',
+                data: { userId1: "{{Auth::user()->id}}", userId2: $(object).attr("name") },
+                dataType: 'json',
+                headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}' },
+                success: function(json) {
+
+                },
+
+                error: function(xhr, ajaxOptions, thrownError){
+                                alert(xhr.responseText);
+                }
+            })
+            $("#imgOfAddFriend").attr("class", "fas fa-sign-out-alt fa-2x");
+            $("#buttonOfAddFriend").attr("class", "btn btn-outline-primary btn-sm");
+            $("#buttonOfAddFriend").removeAttr("onclick");
         }
 
         $(document).ready(function() {

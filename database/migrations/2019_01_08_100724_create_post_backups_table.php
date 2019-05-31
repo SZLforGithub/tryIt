@@ -15,7 +15,7 @@ class CreatePostBackupsTable extends Migration
     {
         Schema::create('post_backups', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('poster');
+            $table->integer('posterId');
             $table->longText('content');
             $table->timestamps();
         });
