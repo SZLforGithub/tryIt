@@ -40,6 +40,9 @@ Route::get('/stories/{whoYouAre}', 'StoryController@index')->name('stories');
 Route::get('ajax/autocomplete', 'Ajax\FriendController@autocomplete')->name('autocomplete');
 Route::post('/search', 'SearchController@search')->name('search');
 
+Route::post('ajax/like', 'Ajax\LikeController@like');
+Route::post('ajax/unlike', 'Ajax\LikeController@unlike');
+
 
 /*Route::get('error', function(){
 	abort(500);

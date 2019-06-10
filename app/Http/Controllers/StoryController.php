@@ -6,10 +6,14 @@ use Illuminate\Http\Request;
 use App\user;
 use App\post;
 use App\photo;
+use App\post_photo;
 use App\friend_relation;
 use Auth;
 use DB;
 use Exception;
+
+use App\Repositories\PostRepository;
+use App\Repositories\PhotoRepository;
 
 
 class StoryController extends Controller
@@ -23,7 +27,6 @@ class StoryController extends Controller
     {
 		$user = User::where('name', '=', $whoYouAre)->first();
         $areYouFriend = $this->areYouFriend($user->id);
-        //dd($areYouFriend);
         $anyAddFriend = DB::table('friend_relations')
                     ->select('friend_relations.userId1', 'users.name', 'users.shot_path', 'photos.smallSource')
                     ->where('friend_relations.userId2', '=', Auth::user()->id)
@@ -33,18 +36,12 @@ class StoryController extends Controller
                     ->get();
     	
         $photoPath = Photo::where('path', '=', $user->shot_path)->first();
-        $posts = DB::table('posts')
-                    ->select('users.name', 'posts.*', 'users.shot_path', 'photos.smallSource')
-                    ->where('posterId', '=', $user->id)
-                    ->leftJoin('users', 'posts.posterId', '=', 'users.id')
-                    ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
-                    ->orderBy('id', 'desc')
-                    ->get();
 
-        $photos = DB::table('post_photos')
-                    ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
-                    ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
-                    ->get();
+        $PostRepository = new PostRepository();
+		$posts = $PostRepository->getOwnPost($user->id);
+
+		$PhotoRepository = new PhotoRepository();
+		$photos = $PhotoRepository->getPhotosForPost();
 
     	return view('stories', [
             'posts' => $posts,

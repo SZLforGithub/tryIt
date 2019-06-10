@@ -112,39 +112,7 @@
             })
         });
         
-        function sureDelete(object) {
-            swal({
-                text: "刪除後將無法復原，確認要刪除此貼文？",
-                icon: "warning",
-                buttons: true,
-                dangerMode: true,
-            })
-            .then((willDelete) => {
-                if (willDelete) {
-                    swal("這則貼文就像所有你愛的一樣，永遠離你而去了。", {
-                        icon: "success",
-                    })
-                    .then((value) => {
-                        let getId = $(object).attr('id');
-                        $.ajax({
-                            type: "POST",
-                            url: "ajax/delete",
-                            data: { id: getId },
-                            dataType: 'json',
-                            headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
-                            success: function(json){
-                                window.location.reload();
-                            },
-                            error: function(xhr, ajaxOptions, thrownError){
-                                alert(xhr.responseText);
-                            }
-                        })
-                    });
-                } else {
-                    swal("它值得。");
-                }
-            });
-        };
+        
 
         function agreeAddFriend(object) {
             $(object).alert('close');

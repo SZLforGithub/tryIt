@@ -126,20 +126,10 @@
     </div>
     <script>
 	    $(function() {
-        	var searchTags = [
-        		"Apple",
-        		"Basic",
-        		"C++",
-        		"Docker",
-        		"Elementor",
-        		"For",
-        	];
-
         	$("#search").autocomplete({
         		source: '{!! URL::route('autocomplete') !!}',
         		minLength: 1,
         		autoFocus:true,
-
         	});
         });
     </script>

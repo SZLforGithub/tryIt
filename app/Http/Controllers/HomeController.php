@@ -11,7 +11,11 @@ use App\post_photo;
 use Auth;
 use Storage;
 use DB;
+
 use Illuminate\Support\Facades\Redis;
+
+use App\Repositories\PostRepository;
+use App\Repositories\PhotoRepository;
 
 class HomeController extends Controller
 {
@@ -30,40 +34,34 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
+    public function index() {
+    	/*$values = Redis::get('string');
+    	dd($values);*/
+    	
     	$friend_relations = DB::table('friend_relations')
     				->select('userId1', 'userId2')
     				->where('userId1', '=', Auth::user()->id)
     				->orwhere('userId2', '=', Auth::user()->id)
     				->get();
     	foreach ($friend_relations as $key => $friend_relation) {
-    		if ($friend_relation->userId1 != Auth::user()->id){
+    		if ($friend_relation->userId1 != Auth::user()->id) {
             	$friendId[$key] = $friend_relation->userId1;
     		}
-            else if ($friend_relation->userId2 != Auth::user()->id){
+            else if ($friend_relation->userId2 != Auth::user()->id) {
             	$friendId[$key] = $friend_relation->userId2;
             }
         }
-		
-        $posts = DB::table('posts')
-                    ->select('users.name', 'posts.*', 'users.shot_path', 'photos.smallSource')
-                    ->leftJoin('users', 'posts.posterId', '=', 'users.id')
-                    ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
-                    ->whereIn('users.id', $friendId)
-                    ->orderBy('id', 'desc')
-                    ->get();
 
-        $photos = DB::table('post_photos')
-                    ->select('post_photos.postId', 'post_photos.photoId', 'photos.path')
-                    ->leftJoin('photos', 'post_photos.photoId', '=', 'photos.id')
-                    ->get();
+		$PostRepository = new PostRepository();
+		$posts = $PostRepository->getFriendsPost($friendId);
+
+        $PhotoRepository = new PhotoRepository();
+		$photos = $PhotoRepository->getPhotosForPost();
+
         return view('home', ['posts' => $posts, 'photos' => $photos]);
     }
 
-    public function create(Request $request)
-    {
-
+    public function create(Request $request) {
         $request = $request::all();
 
         // 存入posts & post_backups資料表
@@ -105,8 +103,7 @@ class HomeController extends Controller
         return Redirect('home');
     }
 
-    public function edit(Request $request, $id)
-    {
+    public function edit(Request $request, $id) {
         $request = $request::all();
         $content = nl2br($request['content']);
         $post = post::find($id);
