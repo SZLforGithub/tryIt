@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 //use Illuminate\Http\Request;
 use Request;
 use App\Post;
-use App\Post_backup;
 use App\photo;
 use App\post_photo;
 use Auth;
@@ -35,9 +34,8 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-    	/*$values = Redis::get('string');
-    	dd($values);*/
     	
+    	$friendId = array();
     	$friend_relations = DB::table('friend_relations')
     				->select('userId1', 'userId2')
     				->where('userId1', '=', Auth::user()->id)
@@ -51,30 +49,35 @@ class HomeController extends Controller
             	$friendId[$key] = $friend_relation->userId2;
             }
         }
-
-		$PostRepository = new PostRepository();
+        
+    	$PostRepository = new PostRepository();
 		$posts = $PostRepository->getFriendsPost($friendId);
 
         $PhotoRepository = new PhotoRepository();
 		$photos = $PhotoRepository->getPhotosForPost();
 
+		/*$post = Post::where('id', '=', '2')->first();
+		$comments = $post->getAllComments()
+						 ->select('users.name', 'photos.smallSource', 'content')
+    					 ->join('users', 'userId', '=', 'users.id')
+    					 ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
+    					 ->get()->dd();*/
+		
+
         return view('home', ['posts' => $posts, 'photos' => $photos]);
+
+
     }
 
     public function create(Request $request) {
         $request = $request::all();
 
-        // 存入posts & post_backups資料表
+        // 存入posts資料表
         $post = new post;
         $post->posterId = Auth::user()->id;
         $content = nl2br($request['content']);
         $post->content = $content;
         $post->save();
-
-        $post_backup = new post_backup;
-        $post_backup->posterId = Auth::user()->id;
-        $post_backup->content = $content;
-        $post_backup->save();
 
         // 處理圖片
         if (isset($request['photoForPost'])){
@@ -110,10 +113,6 @@ class HomeController extends Controller
         $post->content = $content;
         $post->save();
 
-        $post_backup = post_backup::find($id);
-        $post_backup->content = $content;
-        $post_backup->save();
-
-        return Redirect('home');
+        return Redirect()->back();
     }
 }

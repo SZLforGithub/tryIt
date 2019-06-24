@@ -18,6 +18,7 @@ class CreatePostsTable extends Migration
             $table->integer('posterId');
             $table->longText('content');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

@@ -16,7 +16,7 @@
                 </li>
                 @empty
                 <li class="list-group-item">
-                    <span style="color: #AAAAAA;">這裡跟你的錢包一樣，什麼也沒有</span>
+                    <span style="color: #AAAAAA;">這裡跟你的錢包一樣，什麼都沒有</span>
                 </li>
             @endforelse
         </ul>

@@ -24,7 +24,22 @@ class LikeController extends Controller
     	post::find($request->id)
     		->like(Auth::user()->id)
     		->delete();
+    }
 
-    	//return response()->json(array());
+    public function wholikes(Request $request) {
+    	$postId = $request->id;
+    	$post = Post::where('id', '=', $postId)->first();
+		$peopleWhoLikeThisPost = $post->getAllLikes()
+									  ->select('users.name', 'photos.smallSource')
+									  ->join('users', 'userId', '=', 'users.id')
+									  ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
+									  ->get();
+		foreach($peopleWhoLikeThisPost as $temp) {
+			if($temp->smallSource != null)
+				$temp->smallSource = asset($temp->smallSource);
+		}
+    	return response()->json(array(
+    		'peopleWhoLikeThisPost' => $peopleWhoLikeThisPost
+    	));
     }
 }

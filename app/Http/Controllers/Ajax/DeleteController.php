@@ -15,7 +15,9 @@ class DeleteController extends Controller
     
     public function destroy(Request $request) {
     	$id = $request->id;
-    	post::destroy($id);
+    	$post = Post::find($id);
+    	$post->delete();
+    	
     	return response()->json(array());
     }
 }

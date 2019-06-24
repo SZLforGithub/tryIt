@@ -42,7 +42,9 @@ Route::post('/search', 'SearchController@search')->name('search');
 
 Route::post('ajax/like', 'Ajax\LikeController@like');
 Route::post('ajax/unlike', 'Ajax\LikeController@unlike');
-
+Route::post('ajax/whoLikes', 'Ajax\LikeController@whoLikes');
+Route::post('/post{id}/comment', 'CommentController@create');
+Route::post('ajax/comments', 'CommentController@allComments');
 
 /*Route::get('error', function(){
 	abort(500);

@@ -2,35 +2,6 @@
 
 @section('content')
 <div class="container">
-    <!-- Modal -->
-    <div class="modal fade" id="modalForEditPost" tabindex="-1" role="dialog" aria-labelledby="modalForEditPostLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg" role="document">
-            <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalForEditPostLabel">編輯貼文</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <form id="formForPostEdit" method="post" action="" class="was-validated">
-                    @csrf
-                    <div class="containerOfTextarea">
-                        <pre><span id="forAutoResize"></span></pre>
-                        <textarea rows="10" id="postEdit" class="postEdit" name="content" onkeyup="synchronizeText(this)"></textarea>
-                    </div>
-                    <div style="display:none"><button id="submitForPostEdit" type="submit"></button></div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="submitPostEdit">Save changes</button>
-            </div>
-            </div>
-        </div>
-    </div>
-    <!-- Modal End -->
-
     <div class="row justify-content-center">
         <div class="col-md-8">
             <div class="text-center">
@@ -92,7 +63,7 @@
             autosize($('#post'));
         }); 
 
-        $(function() {
+        /*$(function() {
             $('#modalForEditPost').on('shown.bs.modal', function (event){
                 var button = $(event.relatedTarget);
                 var recipient = button.data('postcontent');
@@ -110,7 +81,7 @@
                 autosize.update($('#postEdit'));
                 $('#postEdit').focus();
             })
-        });
+        });*/
         
         
 

@@ -174,7 +174,6 @@
                 $("#submitForEditName").trigger('click');
             });
         });
-
         $(function(){
             $("#submitEmail").click(function(){
                 $("#submitForEditEmail").trigger('click');
@@ -236,9 +235,6 @@
                
                 jcrop_api = this;
                 jcrop_api.animateTo([0, 0, 700, 700]);
-
-                
-
             });
         };
 

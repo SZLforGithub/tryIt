@@ -137,6 +137,13 @@
 		display: block;
 	}
 
+	#forUpdateCommentAutoResize {
+		visibility: hidden;
+		width: 100%;
+		white-space: normal;
+		display: block;
+	}
+
 	.containerOfPhotoPreview {
 		display: inline-block;
 		width: 100px;
@@ -170,6 +177,21 @@
 		background-color: rgba(0, 0, 0, .05);
 		cursor: pointer;
 		border-radius: 10%;
+	}
+
+	.LikeCount:hover {
+		cursor: pointer;
+		text-decoration: underline;	
+	}
+
+	.WhoLikesOrComment:hover {
+		cursor: pointer;
+		background-color: #e9ecef;
+		transition: all 0.5s;
+	}
+
+	.pagination {
+		justify-content: center;
 	}
 
 
