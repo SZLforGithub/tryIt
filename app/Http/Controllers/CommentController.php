@@ -16,7 +16,7 @@ class CommentController extends Controller
     	$comment->content = nl2br($request->updateComment);
     	$comment->save();
 
-    	return Redirect('home');
+    	return back();
     }
 
     public function allComments(Request $request) {
@@ -29,7 +29,7 @@ class CommentController extends Controller
     					 ->get();
 
     	foreach ($comments as $temp) {
-    		if($temp->smallSource != null)
+    		if(!is_null($temp->smallSource))
 				$temp->smallSource = asset($temp->smallSource);
     	}
 

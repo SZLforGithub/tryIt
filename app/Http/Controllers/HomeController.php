@@ -10,11 +10,14 @@ use App\post_photo;
 use Auth;
 use Storage;
 use DB;
+use Mail;
 
 use Illuminate\Support\Facades\Redis;
 
 use App\Repositories\PostRepository;
 use App\Repositories\PhotoRepository;
+
+use App\Mail\MailTest;
 
 class HomeController extends Controller
 {
@@ -26,6 +29,7 @@ class HomeController extends Controller
     public function __construct()
     {
         $this->middleware('auth');
+        $this->middleware('verified');
     }
 
     /**
@@ -34,7 +38,7 @@ class HomeController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index() {
-    	
+    	//Mail::to('i0989872540@gmail.com')->send(new MailTest());
     	$friendId = array();
     	$friend_relations = DB::table('friend_relations')
     				->select('userId1', 'userId2')
@@ -56,17 +60,7 @@ class HomeController extends Controller
         $PhotoRepository = new PhotoRepository();
 		$photos = $PhotoRepository->getPhotosForPost();
 
-		/*$post = Post::where('id', '=', '2')->first();
-		$comments = $post->getAllComments()
-						 ->select('users.name', 'photos.smallSource', 'content')
-    					 ->join('users', 'userId', '=', 'users.id')
-    					 ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
-    					 ->get()->dd();*/
-		
-
         return view('home', ['posts' => $posts, 'photos' => $photos]);
-
-
     }
 
     public function create(Request $request) {

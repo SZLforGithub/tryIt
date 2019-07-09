@@ -153,7 +153,7 @@
             <div class="card-footer bg-transparent">
                 <div class="row justify-content-center">
 
-                    @if ($post->like(Auth::user()->id)->exists())
+                    @if ($post->isThisUserLike(Auth::user()->id)->exists())
                         <div class="col text-center likeAndComment" id="like" onclick="unlike(this)" name="{{$post->id}}">
                             <i class="fas fa-heart" style="color:red; margin-right:6px;"></i>讚
                         </div>
@@ -272,7 +272,7 @@
         var getId = $(object).attr('name');
         $.ajax({
             type: "POST",
-            url: '{{ url("ajax/comments") }}',
+            url: '{{ url("ajax/comment/get") }}',
             data: { id: getId },
             dataType: 'json',
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
@@ -283,10 +283,10 @@
                     var tempForCommentContent = (json.comments[index].content);
                     $(".listForComments").append(function (index) {
                         if (tempForCommentShot != null) {
-                            return "<li id='" + tempForCommentName + "' class='list-group-item'>" + "<div class='row'><div class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'><img src='" + tempForCommentShot + "' class='smallSource' style='margin-right:6px;'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
+                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentName + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'><img src='" + tempForCommentShot + "' class='smallSource' style='margin-right:6px;'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
                         }
                         else {
-                            return "<li id='" + tempForCommentName + "' class='list-group-item'>" + "<div class='row'><div class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
+                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentName + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
                         }
                     });
                 }
@@ -394,15 +394,15 @@
         $('#modalForUpdateComment').on('shown.bs.modal', function (event) {
             $('#formForUpdateComment').attr('action', function () {
                 if (location.pathname == '/tryIt/public/home') {
-                    var a = 'post';
-                    var b = a.concat(getId);
-                    var c = b.concat('/comment');
+                    var a = 'comment';
+                    var b = a.concat('/post');
+                    var c = b.concat(getId);
                     return c;
                 }
                 else {
-                    var a = '../post';
-                    var b = a.concat(getId);
-                    var c = b.concat('/comment');
+                    var a = '../comment';
+                    var b = a.concat('/post');
+                    var c = b.concat(getId);
                     return c;
                 }
             });

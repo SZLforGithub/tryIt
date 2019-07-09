@@ -15,7 +15,7 @@ Route::get('/', function () {
     return redirect()->route('home');
 });
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::get('/home', 'HomeController@index')->name('home');
 Route::post('create', 'HomeController@create')->name('create');
@@ -24,7 +24,6 @@ Route::post('/post{id}/edit', 'HomeController@edit')->name('editPost');
 
 Route::get('/profile', 'ProfileController@index')->name('profile');
 Route::post('edit', 'ProfileController@edit')->name('edit');
-
 Route::prefix('/Shot')->group(function(){
 	Route::post('/post', 'shotController@uploadShot')->name('uploadShot');
 	Route::post('/put', 'shotController@editShot')->name('editShot');
@@ -40,11 +39,17 @@ Route::get('/stories/{whoYouAre}', 'StoryController@index')->name('stories');
 Route::get('ajax/autocomplete', 'Ajax\FriendController@autocomplete')->name('autocomplete');
 Route::post('/search', 'SearchController@search')->name('search');
 
-Route::post('ajax/like', 'Ajax\LikeController@like');
-Route::post('ajax/unlike', 'Ajax\LikeController@unlike');
-Route::post('ajax/whoLikes', 'Ajax\LikeController@whoLikes');
-Route::post('/post{id}/comment', 'CommentController@create');
-Route::post('ajax/comments', 'CommentController@allComments');
+Route::prefix('ajax')->group(function(){
+	Route::post('/like', 'Ajax\LikeController@like');
+	Route::post('/unlike', 'Ajax\LikeController@unlike');
+	Route::post('/whoLikes', 'Ajax\LikeController@whoLikes');
+});
+
+Route::post('/comment/post{id}', 'CommentController@create');
+Route::post('ajax/comment/get', 'CommentController@allComments');
+
+Route::get('/auth/redirect/{provider}', 'Auth\LoginController@redirect');
+Route::get('/callback/{provider}', 'Auth\LoginController@callback');
 
 /*Route::get('error', function(){
 	abort(500);

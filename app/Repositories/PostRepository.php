@@ -7,8 +7,11 @@ use Auth;
 
 class PostRepository
 {
+     static $row_per_page = 10;
+
 	public function getFriendsPost($friendId) {
           array_push($friendId, Auth::user()->id);
+
 		return post::select('users.name', 'posts.*', 'users.shot_path', 'photos.smallSource')
                     ->leftJoin('users', 'posts.posterId', '=', 'users.id')
                     ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
@@ -16,7 +19,7 @@ class PostRepository
                     ->orderBy('id', 'desc')
                     ->withCount('getAllLikes')
                     ->withCount('getAllComments')
-                    ->paginate(10);
+                    ->paginate($this::$row_per_page);
 	}
 
 	public function getOwnPost($userId) {
@@ -27,6 +30,6 @@ class PostRepository
                     ->orderBy('id', 'desc')
                     ->withCount('getAllLikes')
                     ->withCount('getAllComments')
-                    ->paginate(10);
+                    ->paginate($this::$row_per_page);
 	}
 }

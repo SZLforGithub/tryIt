@@ -9,8 +9,8 @@ class post extends Model
 {
 	use SoftDeletes;
 	protected $dates = ['deleted_at'];
-	
-	public function like($userId) {
+
+	public function isThisUserLike($userId) {
 		return $this->hasOne('App\like', 'postId', 'id')->where('userId', $userId);
 	}
 

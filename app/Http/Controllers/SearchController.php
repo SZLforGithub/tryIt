@@ -9,6 +9,7 @@ class SearchController extends Controller
 {
     public function __construst() {
     	$this->middleware('auth');
+        $this->middleware('verified');
     }
 
     public function search(Request $request) {

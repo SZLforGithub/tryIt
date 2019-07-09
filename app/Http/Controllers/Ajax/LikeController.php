@@ -35,8 +35,8 @@ class LikeController extends Controller
 									  ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
 									  ->get();
 		foreach($peopleWhoLikeThisPost as $temp) {
-			if($temp->smallSource != null)
-				$temp->smallSource = asset($temp->smallSource);
+            if(!is_null($temp->smallSource))
+                $temp->smallSource = asset($temp->smallSource);
 		}
     	return response()->json(array(
     		'peopleWhoLikeThisPost' => $peopleWhoLikeThisPost

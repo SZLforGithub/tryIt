@@ -248,7 +248,6 @@
                 var rx = xsize / c.w;
                 var ry = ysize / c.h;
 
-
                 $('#preview-pane .preview-container img').css({
                     width: Math.round(rx * boundx) + 'px',
                     height: Math.round(ry * boundy) + 'px',
