@@ -6,6 +6,8 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+use App\Jobs\SendMailJob;
+
 
 class User extends Authenticatable implements MustVerifyEmail
 {
@@ -28,4 +30,8 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function sendEmailVerificationNotification() {
+        SendMailJob::dispatch($this);
+    }
 }

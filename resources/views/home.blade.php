@@ -1,5 +1,5 @@
 @extends('layouts.app')
-
+test
 @section('content')
 <div class="container">
     <div class="row justify-content-center">
@@ -94,9 +94,7 @@
                     prevEl: '.swiper-button-prev',
                 },
             })
-        })
-        
-
+        }) 
     </script>
 </div>
 @endsection
