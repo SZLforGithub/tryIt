@@ -13,7 +13,7 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
 
     <!-- jQuery -->
-    <script src="http://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -96,7 +96,7 @@
                                 </a>
 
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ route('stories', ['whoYouAre' => Auth::user()->name]) }}">
+                                    <a class="dropdown-item" href="{{ route('stories', ['whoYouAre' => Auth::user()->id]) }}">
                                         {{ __('Your Stories') }}
                                     </a>
                                     <a class="dropdown-item" href="{{ route('profile') }}">

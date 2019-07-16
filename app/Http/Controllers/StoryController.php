@@ -26,7 +26,7 @@ class StoryController extends Controller
 
     public function index($whoYouAre)
     {
-		$user = User::where('name', '=', $whoYouAre)->first();
+		$user = User::where('id', '=', $whoYouAre)->first();
         $areYouFriend = $this->areYouFriend($user->id);
         $anyAddFriend = DB::table('friend_relations')
                     ->select('friend_relations.userId1', 'users.name', 'users.shot_path', 'photos.smallSource')

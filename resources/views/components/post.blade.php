@@ -98,10 +98,10 @@
             <div class="card-body">
                 <div class="media">
                     @if ($post->shot_path != null)
-                        <a href="{{ route('stories', ['whoYouAre' => $post->name]) }}"><img class="smallSource" src="{{ asset($post->smallSource) }}" /></a>
+                        <a href="{{ route('stories', ['whoYouAre' => $post->posterId]) }}"><img class="smallSource" src="{{ asset($post->smallSource) }}" /></a>
                     @endif
                     <div class="media-body ml-1">
-                        <a href="{{ route('stories', ['whoYouAre' => $post->name]) }}">{{ $post->name }}</a> <br>
+                        <a href="{{ route('stories', ['whoYouAre' => $post->posterId]) }}">{{ $post->name }}</a> <br>
                         <span style="font-size: .8rem; color: #616770">{{ date("Y年m月d日 h:ia", strtotime($post->created_at)) }}</span>
                     </div>
                     @if ($post->name == Auth::user()->name)
@@ -247,15 +247,16 @@
                 headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
                 success: function(json){
                     for (var index in json.peopleWhoLikeThisPost) {                     
+                        var tempForID = (json.peopleWhoLikeThisPost[index].id);
                         var tempForName = (json.peopleWhoLikeThisPost[index].name);
                         var tempForShot = (json.peopleWhoLikeThisPost[index].smallSource);
 
                         $(".listForWhoLikes").append(function (index) {
                             if (tempForShot != null) {
-                                return "<li id='" + tempForName + "' class='list-group-item WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + "<img src='" + tempForShot + "' class='smallSource' style='margin-right:6px;'>" + tempForName + "</li>";
+                                return "<li id='" + tempForID + "' class='list-group-item WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + "<img src='" + tempForShot + "' class='smallSource' style='margin-right:6px;'>" + tempForName + "</li>";
                             }
                             else {
-                                return "<li id='" + tempForName + "' class='list-group-item WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForName + "</li>";
+                                return "<li id='" + tempForID + "' class='list-group-item WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForName + "</li>";
                             }
                         });
                     }
@@ -278,15 +279,16 @@
             headers: { 'X-CSRF-TOKEN': '{{ csrf_token() }}'},
             success: function(json) {
                 for (var index in json.comments) {
+                    var tempForCommentID = (json.comments[index].id);
                     var tempForCommentName = (json.comments[index].name);
                     var tempForCommentShot = (json.comments[index].smallSource);
                     var tempForCommentContent = (json.comments[index].content);
                     $(".listForComments").append(function (index) {
                         if (tempForCommentShot != null) {
-                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentName + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'><img src='" + tempForCommentShot + "' class='smallSource' style='margin-right:6px;'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
+                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentID + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'><img src='" + tempForCommentShot + "' class='smallSource' style='margin-right:6px;'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
                         }
                         else {
-                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentName + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
+                            return "<li class='list-group-item'>" + "<div class='row'><div id='" + tempForCommentID + "'class='col-4 WhoLikesOrComment' onclick='gotoThisPersonStory(this)'>" + tempForCommentName + "</div><div class='col-8' style='word-wrap: break-word; word-break: break-word;'>" + tempForCommentContent + "</div></div></li>";
                         }
                     });
                 }

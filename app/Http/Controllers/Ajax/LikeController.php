@@ -30,7 +30,7 @@ class LikeController extends Controller
     	$postId = $request->id;
     	$post = Post::where('id', '=', $postId)->first();
 		$peopleWhoLikeThisPost = $post->getAllLikes()
-									  ->select('users.name', 'photos.smallSource')
+									  ->select('users.id', 'users.name', 'photos.smallSource')
 									  ->join('users', 'userId', '=', 'users.id')
 									  ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
 									  ->get();

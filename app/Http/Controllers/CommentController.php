@@ -23,7 +23,7 @@ class CommentController extends Controller
     	$postId = $request->id;
     	$post = Post::where('id', '=', $postId)->first();
     	$comments = $post->getAllComments()
-    					 ->select('users.name', 'photos.smallSource', 'content')
+    					 ->select('users.id', 'users.name', 'photos.smallSource', 'content')
     					 ->join('users', 'userId', '=', 'users.id')
     					 ->leftJoin('photos', 'users.shot_path', '=', 'photos.path')
     					 ->get();
