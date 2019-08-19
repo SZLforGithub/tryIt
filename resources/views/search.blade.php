@@ -10,9 +10,9 @@
             @forelse ($searchs as $search)
                 <li class="list-group-item">
                     @if ($search->smallSource != null)
-                        <a href="{{ route('stories', ['whoYouAre' => $search->name]) }}"><img class="smallSource" src="{{ asset($search->smallSource) }}" /></a><br>
+                        <a href="{{ route('stories', ['whoYouAre' => $search->id]) }}"><img class="smallSource" src="{{ asset($search->smallSource) }}" /></a><br>
                     @endif
-                    <a href="{{ route('stories', ['whoYouAre' => $search->name]) }}">{{ $search->name }}</a>
+                    <a href="{{ route('stories', ['whoYouAre' => $search->id]) }}">{{ $search->name }}</a>
                 </li>
                 @empty
                 <li class="list-group-item">

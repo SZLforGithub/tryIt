@@ -34,8 +34,8 @@ class AppServiceProvider extends ServiceProvider
     private function getVariable()
     {
         if (Auth::check()) {
-            $whoYouAre = Auth::user()->name;
-            $user = User::where('name', '=', $whoYouAre)->first();
+            $whoYouAre = Auth::user()->id;
+            $user = User::where('id', '=', $whoYouAre)->first();
             $sourcePath = $user->shot_path;
             $photo = Photo::where('path', '=', $sourcePath)->first();
             if($photo == null)
